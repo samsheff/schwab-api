@@ -101,7 +101,7 @@ class SessionManager:
             return True
         else:
             # attempt to login
-            return asyncio.get_running_loop().run_until_complete(self._async_login())
+            return asyncio.create_task(self._async_login())
 
     def update_token(self, token_type='api', login=True):
         r = self.session.get(f"https://client.schwab.com/api/auth/authorize/scope/{token_type}")
@@ -109,7 +109,7 @@ class SessionManager:
             if login:
                 if self.debug:
                     print("DEBUG: session invalid; logging in again")
-                result = asyncio.get_running_loop().run_until_complete(self._async_login())
+                result = asyncio.create_task(self._async_login())
                 return result
             else:
                 raise ValueError(f"Error updating Bearer token: {r.reason}")
